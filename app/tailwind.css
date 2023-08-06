@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.eot");
+  src: url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/f389091962d8dab9ec69c5060e2e023c.svg#Press Start 2P")
+      format("svg");
+}
+
+:root {
+  --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
+    Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: PressStart2P, var(--font-body);
+}
