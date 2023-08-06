@@ -1,6 +1,6 @@
 import { type LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Link, Form, useLoaderData } from "@remix-run/react";
 import { createRepoIssue } from "~/services/github.server";
 
 import { authenticator } from "~/services/auth.server";
@@ -28,38 +28,45 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     failureRedirect: "/login",
   });
 
-  return null;
+  return { owner: params.owner, repo: params.repo };
 };
 
 export default function Screen() {
+  const { owner, repo } = useLoaderData<typeof loader>();
   return (
-    <div className="nes-container with-title mt-5">
-      <p className="title">Create New Issue</p>
-      <Form method="post">
-        <div className="flex flex-col gap-4">
-          <p>Oh no! You Found an issue. Thanks for reporting it.</p>
-          <div className="nes-field">
-            <label htmlFor="title">title</label>
-            <input
+    <>
+      <div>
+        <Link to={`/${owner}`}>{owner}</Link> /{" "}
+        <Link to={`/${owner}/${repo}`}>{repo}</Link>
+      </div>
+      <div className="nes-container with-title mt-5">
+        <p className="title">Create New Issue</p>
+        <Form method="post">
+          <div className="flex flex-col gap-4">
+            <p>Oh no! You Found an issue. Thanks for reporting it.</p>
+            <div className="nes-field">
+              <label htmlFor="title">title</label>
+              <input
+                required
+                type="text"
+                id="title"
+                name="title"
+                className="nes-input"
+              />
+            </div>
+            <label htmlFor="description">Textarea</label>
+            <textarea
               required
-              type="text"
-              id="title"
-              name="title"
-              className="nes-input"
-            />
+              name="description"
+              id="description"
+              className="nes-textarea"
+            ></textarea>
+            <button type="submit" className="nes-btn is-primary">
+              Open Issue
+            </button>
           </div>
-          <label htmlFor="description">Textarea</label>
-          <textarea
-            required
-            name="description"
-            id="description"
-            className="nes-textarea"
-          ></textarea>
-          <button type="submit" className="nes-btn is-primary">
-            Open Issue
-          </button>
-        </div>
-      </Form>
-    </div>
+        </Form>
+      </div>
+    </>
   );
 }
