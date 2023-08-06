@@ -6,8 +6,6 @@ import {
   getUserRepos,
   getOwnerDetails,
 } from "~/services/github.server";
-import { Markdown } from "~/components/markdown";
-import { parseMarkdown } from "~/services/markdown.server";
 
 import { authenticator } from "~/services/auth.server";
 
@@ -16,7 +14,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     failureRedirect: "/login",
   });
 
-  const ownerDetails = await getOwnerDetails(user, params.owner);
+  const ownerDetails = await getOwnerDetails(user, params.owner!);
 
   const repos =
     ownerDetails.data.type === "User"
@@ -31,7 +29,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return json({
     user,
-    repos: repos.data.map((repo) => {
+    repos: repos.data.map((repo: any) => {
       return {
         // name: repo.name,
         // description: repo.description,

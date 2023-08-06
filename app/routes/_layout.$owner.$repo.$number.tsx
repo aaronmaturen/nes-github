@@ -2,8 +2,6 @@ import { type LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getIssueComments, getRepoIssue } from "~/services/github.server";
-import { Markdown } from "~/components/markdown";
-import { parseMarkdown } from "~/services/markdown.server";
 
 import { authenticator } from "~/services/auth.server";
 
