@@ -50,6 +50,7 @@ export default function Screen() {
       {/* <pre>{JSON.stringify(starred, null, 2)}</pre> */}
       <div className="nes-container with-title">
         <p className="title">Issues</p>
+        {issues.length === 0 && <p>You have no assigned issues.</p>}
         <ul className="nes-list is-disc">
           {issues.map((issue: any) => (
             <li key={issue.id}>
