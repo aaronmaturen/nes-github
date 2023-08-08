@@ -2,11 +2,27 @@ import type { DataFunctionArgs } from "@remix-run/node";
 import type { User } from "~/services/session.server";
 
 import { redirect, json } from "@remix-run/node";
-import { useLoaderData, Outlet } from "@remix-run/react";
+import { useLoaderData, Outlet, Form } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
 
 import { Navigation } from "~/components/navigation";
 import { Footer } from "~/components/footer";
+
+export function ErrorBoundary() {
+  return (
+    <div>
+      <h1>Uh oh ...</h1>
+      <p>Something went wrong.</p>
+      <p>
+        It could be that your token expired, we haven't added the refresh
+        logic... just logout and back in :D
+      </p>
+      <Form action="/auth/logout" method="post">
+        <button className="nes-btn is-error">Log Out</button>
+      </Form>
+    </div>
+  );
+}
 
 type LoaderData = {
   user: User | null;
