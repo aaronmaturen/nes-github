@@ -16,14 +16,14 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const user = await getUser(session);
 
-  return json({ user: user.data });
+  return json({ user: user.data, session });
 };
 
 export default function Screen() {
-  const { user } = useLoaderData<typeof loader>();
+  const { session, user } = useLoaderData<typeof loader>();
   return (
     <pre>
-      <code>{JSON.stringify(user, null, 2)}</code>
+      <code>{JSON.stringify({ session, user }, null, 2)}</code>
     </pre>
   );
 }

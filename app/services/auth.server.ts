@@ -22,7 +22,17 @@ let gitHubStrategy = new GitHubStrategy(
     callbackURL: new URL("/auth/github/callback", BASE_URL).toString(),
   },
   async ({ profile, accessToken, extraParams }) => {
-    return { profile, accessToken, extraParams };
+    var expiresAt = new Date();
+    expiresAt.setSeconds(
+      expiresAt.getSeconds() + extraParams.accessTokenExpiresIn!
+    );
+
+    return {
+      profile,
+      accessToken,
+      extraParams,
+      expiresAt,
+    };
   }
 );
 
