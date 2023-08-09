@@ -18,12 +18,17 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     failureRedirect: "/login",
   });
 
+  // parse the search params for `?q=`
+  const url = new URL(request.url);
+  const includeClosed = url.searchParams.get("includeClosed") === "true";
+
   // const issues = await getMyIssues(user);
 
   const issues = await getRepoIssues({
     user: user,
     owner: params.owner!,
     repo: params.repo!,
+    includeClosed,
   });
 
   const details = await getRepoDetails({
@@ -40,6 +45,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return json({
     user,
+    includeClosed,
     owner: params.owner,
     repo: params.repo,
     stars: details.data.stargazers_count,
@@ -83,16 +89,32 @@ export const action = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Screen() {
-  const { issues, owner, repo, stars, starred } =
+  const { issues, owner, repo, stars, starred, includeClosed } =
     useLoaderData<typeof loader>();
 
   return (
     <>
-      <div>
-        <Link to={`/${owner}`}>{owner}</Link> / {repo}{" "}
-        <Link className="nes-btn" to={`/${owner}/${repo}/new`}>
-          New Issue
-        </Link>
+      <div className="flex items-center justify-between">
+        <div>
+          <Link to={`/${owner}`}>{owner}</Link> / {repo}{" "}
+          <Link className="nes-btn" to={`/${owner}/${repo}/new`}>
+            New Issue
+          </Link>
+        </div>
+        <Form method="get">
+          <button
+            className="nes-text is-primary"
+            name="includeClosed"
+            value={includeClosed ? "false" : "true"}
+          >
+            <input
+              type="checkbox"
+              className="nes-checkbox"
+              checked={includeClosed}
+            />
+            <span>Include Closed? {includeClosed}</span>
+          </button>
+        </Form>
       </div>
       <div>
         <Form method="post">
