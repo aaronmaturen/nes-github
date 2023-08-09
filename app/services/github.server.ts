@@ -55,22 +55,25 @@ export const getRepoIssues = async ({
   owner,
   repo,
   includeClosed,
+  page,
 }: {
   user: User;
   owner: string;
   repo: string;
   includeClosed: boolean;
+  page: string;
 }) => {
   const octokit = new Octokit({
     auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request(
-    `GET /repos/{owner}/{repo}/issues?state={state}`,
+    `GET /repos/{owner}/{repo}/issues?state={state}&page={page}`,
     {
       owner,
       repo,
       state: includeClosed ? "all" : "open",
+      page,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },

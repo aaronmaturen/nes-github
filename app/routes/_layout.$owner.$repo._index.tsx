@@ -21,6 +21,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   // parse the search params for `?q=`
   const url = new URL(request.url);
   const includeClosed = url.searchParams.get("includeClosed") === "true";
+  const page = url.searchParams.get("page") ?? "1";
 
   // const issues = await getMyIssues(user);
 
@@ -29,6 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       user: user,
       owner: params.owner!,
       repo: params.repo!,
+      page,
       includeClosed,
     }),
     getRepoDetails({
@@ -43,11 +45,26 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     }),
   ]);
 
+  const pagination =
+    issues.headers.link
+      ?.split(",")
+      .reduce<{ [key: string]: string }>((a, b) => {
+        const [page, key] = b.split(";").map((s) => s.trim());
+        const pageMatch = page.match(/page=(\d+)/);
+        const keyMatch = key.match(/rel="(.+)"/);
+        if (pageMatch && keyMatch) {
+          a[keyMatch[1]] = pageMatch[1];
+        }
+        return a;
+      }, {}) ?? {};
+
   return json({
     user,
     includeClosed,
     owner: params.owner,
     repo: params.repo,
+    page,
+    pagination,
     stars: details.data.stargazers_count,
     starred,
     issues: issues.data.map((issue: any) => {
@@ -89,8 +106,16 @@ export const action = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Screen() {
-  const { issues, owner, repo, stars, starred, includeClosed } =
-    useLoaderData<typeof loader>();
+  const {
+    issues,
+    owner,
+    repo,
+    page,
+    stars,
+    starred,
+    pagination,
+    includeClosed,
+  } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -111,6 +136,7 @@ export default function Screen() {
               type="checkbox"
               className="nes-checkbox"
               checked={includeClosed}
+              readOnly
             />
             <span>Include Closed? {includeClosed}</span>
           </button>
@@ -177,6 +203,52 @@ export default function Screen() {
             <Markdown content={issue.body} />
           </div>
         ))}
+        {(page !== "1" || pagination.next) && (
+          <Form method="get" className="flex items-center gap-4 self-end">
+            <button
+              className={`nes-btn ${
+                pagination.first ? "is-default" : "is-disabled"
+              }`}
+              name="page"
+              value={pagination.first}
+              disabled={!pagination.first}
+            >
+              First
+            </button>
+            <button
+              className={`nes-btn ${
+                pagination.prev ? "is-default" : "is-disabled"
+              }`}
+              name="page"
+              value={pagination.prev}
+              disabled={!pagination.prev}
+            >
+              Prev
+            </button>
+            {page}
+            {pagination.last ? ` of ${pagination.last}` : ` of ${page}`}
+            <button
+              className={`nes-btn ${
+                pagination.next ? "is-default" : "is-disabled"
+              }`}
+              name="page"
+              value={pagination.next}
+              disabled={!pagination.next}
+            >
+              Next
+            </button>
+            <button
+              className={`nes-btn ${
+                pagination.last ? "is-default" : "is-disabled"
+              }`}
+              name="page"
+              value={pagination.last}
+              disabled={!pagination.last}
+            >
+              Last
+            </button>
+          </Form>
+        )}
       </div>
     </>
   );

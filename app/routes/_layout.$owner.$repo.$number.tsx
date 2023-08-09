@@ -71,7 +71,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       number: params.number!,
     }).then(({ data }) =>
       data.map((comment: any) => {
-        console.log(comment);
         return {
           id: comment.id,
           body: parseMarkdown(comment.body),
