@@ -24,24 +24,24 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   // const issues = await getMyIssues(user);
 
-  const issues = await getRepoIssues({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-    includeClosed,
-  });
-
-  const details = await getRepoDetails({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-  });
-
-  const starred = await isStarred({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-  });
+  const [issues, details, starred] = await Promise.all([
+    getRepoIssues({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+      includeClosed,
+    }),
+    getRepoDetails({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+    }),
+    isStarred({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+    }),
+  ]);
 
   return json({
     user,

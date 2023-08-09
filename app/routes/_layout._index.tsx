@@ -10,14 +10,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     failureRedirect: "/login",
   });
 
-  const issues = await getMyIssues(user);
-  const starred = await getMyStarred(user);
-
-  // const issues = await getRepoIssues({
-  //   user: user,
-  //   owner: "remix-run",
-  //   repo: "remix",
-  // });
+  const [issues, starred] = await Promise.all([
+    getMyIssues(user),
+    getMyStarred(user),
+  ]);
 
   return json({
     displayName: user.profile.displayName,

@@ -57,49 +57,48 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     failureRedirect: "/login",
   });
 
-  const issue = await getRepoIssue({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-    number: params.number!,
-  });
-
-  const comments = await getIssueComments({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-    number: params.number!,
-  }).then(({ data }) =>
-    data.map((comment: any) => {
-      console.log(comment);
-      return {
-        id: comment.id,
-        body: parseMarkdown(comment.body),
-        user: comment.user.login,
-        avatar: comment.user.avatar_url,
-        created_at: comment.created_at,
-        type: "comment",
-      };
-    })
-  );
-
-  const events = await getIssueEvents({
-    user: user,
-    owner: params.owner!,
-    repo: params.repo!,
-    number: params.number!,
-  }).then(({ data }) =>
-    data.map((event: any) => {
-      return {
-        id: event.id,
-        event: event.event,
-        user: event.actor.login,
-        created_at: event.created_at,
-        type: "event",
-      };
-    })
-  );
-  console.log("events", events.data);
+  const [issue, comments, events] = await Promise.all([
+    getRepoIssue({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+      number: params.number!,
+    }),
+    getIssueComments({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+      number: params.number!,
+    }).then(({ data }) =>
+      data.map((comment: any) => {
+        console.log(comment);
+        return {
+          id: comment.id,
+          body: parseMarkdown(comment.body),
+          user: comment.user.login,
+          avatar: comment.user.avatar_url,
+          created_at: comment.created_at,
+          type: "comment",
+        };
+      })
+    ),
+    getIssueEvents({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+      number: params.number!,
+    }).then(({ data }) =>
+      data.map((event: any) => {
+        return {
+          id: event.id,
+          event: event.event,
+          user: event.actor.login,
+          created_at: event.created_at,
+          type: "event",
+        };
+      })
+    ),
+  ]);
 
   return json({
     user,
