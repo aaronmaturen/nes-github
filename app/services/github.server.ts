@@ -3,7 +3,7 @@ import { type User } from "~/services/session.server";
 
 export const getMyIssues = async (user: User) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /user/issues", {
@@ -15,7 +15,7 @@ export const getMyIssues = async (user: User) => {
 
 export const getUser = async (user: User) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /user", {
@@ -27,7 +27,7 @@ export const getUser = async (user: User) => {
 
 export const getMyStarred = async (user: User) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /user/starred", {
@@ -39,7 +39,7 @@ export const getMyStarred = async (user: User) => {
 
 export const getOwnerDetails = async (user: User, owner: string) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /users/{owner}", {
@@ -60,10 +60,103 @@ export const getRepoIssues = async ({
   repo: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request(`GET /repos/{owner}/{repo}/issues`, {
+    owner,
+    repo,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+};
+
+export const getRepoDetails = async ({
+  user,
+  owner,
+  repo,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request(`GET /repos/{owner}/{repo}`, {
+    owner,
+    repo,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+};
+
+export const starRepo = async ({
+  user,
+  owner,
+  repo,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request("PUT /user/starred/{owner}/{repo}", {
+    owner,
+    repo,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+};
+
+export const isStarred = async ({
+  user,
+  owner,
+  repo,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  try {
+    await octokit.request("GET /user/starred/{owner}/{repo}", {
+      owner,
+      repo,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const unstarRepo = async ({
+  user,
+  owner,
+  repo,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request("DELETE /user/starred/{owner}/{repo}", {
     owner,
     repo,
     headers: {
@@ -84,7 +177,7 @@ export const getRepoIssue = async ({
   repo: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request(`GET /repos/{owner}/{repo}/issues/{number}`, {
@@ -97,6 +190,40 @@ export const getRepoIssue = async ({
   });
 };
 
+export const getInstallations = async ({ user }: { user: User }) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request(`GET /user/installations`, {
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+};
+
+export const getInstallationDetails = async ({
+  installation,
+  user,
+}: {
+  installation: string;
+  user: User;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request(
+    `GET /user/installations/{installation}/repositories`,
+    {
+      installation,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+};
+
 export const getOrgRepos = async ({
   user,
   owner,
@@ -105,7 +232,7 @@ export const getOrgRepos = async ({
   owner: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /orgs/{org}/repos", {
@@ -128,7 +255,7 @@ export const getIssueComments = async ({
   number: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request(
@@ -152,7 +279,7 @@ export const getUserRepos = async ({
   owner: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("GET /users/{user}/repos", {
@@ -177,7 +304,7 @@ export const createRepoIssue = async ({
   description: string;
 }) => {
   const octokit = new Octokit({
-    auth: `token ${user.accessToken}`,
+    auth: `Bearer ${user.accessToken}`,
   });
 
   return await octokit.request("POST /repos/{owner}/{repo}/issues", {

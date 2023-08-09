@@ -1,9 +1,15 @@
 import { type LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import { getRepoIssues } from "~/services/github.server";
-// import { Markdown } from "~/components/markdown";
-// import { parseMarkdown } from "~/services/markdown.server";
+import { json, redirect } from "@remix-run/node";
+import { Link, useLoaderData, Form } from "@remix-run/react";
+import {
+  getRepoDetails,
+  getRepoIssues,
+  starRepo,
+  unstarRepo,
+  isStarred,
+} from "~/services/github.server";
+import { Markdown } from "~/components/markdown";
+import { parseMarkdown } from "~/services/markdown.server";
 
 import { authenticator } from "~/services/auth.server";
 
@@ -13,29 +19,73 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 
   // const issues = await getMyIssues(user);
+
   const issues = await getRepoIssues({
     user: user,
     owner: params.owner!,
     repo: params.repo!,
   });
 
+  const details = await getRepoDetails({
+    user: user,
+    owner: params.owner!,
+    repo: params.repo!,
+  });
+
+  const starred = await isStarred({
+    user: user,
+    owner: params.owner!,
+    repo: params.repo!,
+  });
+
+  // console.log(JSON.stringify(details, null, 2));
+  console.log(JSON.stringify(starred, null, 2));
+
   return json({
     user,
     owner: params.owner,
     repo: params.repo,
+    stars: details.data.stargazers_count,
+    starred,
     issues: issues.data.map((issue: any) => {
       return {
         id: issue.id,
         title: issue.title,
-        body: issue.body, // parseMarkdown(issue.body),
+        body: parseMarkdown(issue.body),
         number: issue.number,
       };
     }),
   });
 };
 
+export const action = async ({ request, params }: LoaderArgs) => {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
+  const body = await request.formData();
+
+  if (body.get("action") === "star") {
+    await starRepo({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+    });
+  }
+  if (body.get("action") === "unstar") {
+    await unstarRepo({
+      user: user,
+      owner: params.owner!,
+      repo: params.repo!,
+    });
+  }
+
+  return redirect(`/${params.owner}/${params.repo}`);
+};
+
 export default function Screen() {
-  const { issues, owner, repo } = useLoaderData<typeof loader>();
+  const { issues, owner, repo, stars, starred } =
+    useLoaderData<typeof loader>();
 
   return (
     <>
@@ -44,6 +94,25 @@ export default function Screen() {
         <Link className="nes-btn" to={`/${owner}/${repo}/new`}>
           New Issue
         </Link>
+      </div>
+      <div>
+        <Form method="post">
+          <button
+            type="submit"
+            name="action"
+            value={starred ? "unstar" : "star"}
+            className="nes-badge is-splited"
+          >
+            <span className="is-dark">
+              <i
+                className={`nes-icon star is-small ${
+                  starred ? "" : "is-empty"
+                }`}
+              ></i>
+            </span>
+            <span className="is-primary">{stars}</span>
+          </button>
+        </Form>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -55,8 +124,7 @@ export default function Screen() {
             <Link className="title" to={`/${owner}/${repo}/${issue.number}`}>
               {issue.number} {issue.title}
             </Link>
-            {/* <Markdown content={issue.body} /> */}
-            <pre>{issue.body}</pre>
+            <Markdown content={issue.body} />
           </div>
         ))}
       </div>

@@ -20,6 +20,7 @@ let gitHubStrategy = new GitHubStrategy(
     clientID: process.env.GITHUB_CLIENT_ID!,
     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     callbackURL: new URL("/auth/github/callback", BASE_URL).toString(),
+    scope: "user, repo, read:org",
   },
   async ({ profile, accessToken, extraParams }) => {
     var expiresAt = new Date();
