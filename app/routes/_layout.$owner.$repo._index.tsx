@@ -38,9 +38,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     repo: params.repo!,
   });
 
-  // console.log(JSON.stringify(details, null, 2));
-  console.log(JSON.stringify(starred, null, 2));
-
   return json({
     user,
     owner: params.owner,
@@ -53,6 +50,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         title: issue.title,
         body: parseMarkdown(issue.body),
         number: issue.number,
+        pull_request: Boolean(issue.pull_request),
+        state: issue.state,
       };
     }),
   });
@@ -124,6 +123,28 @@ export default function Screen() {
             <Link className="title" to={`/${owner}/${repo}/${issue.number}`}>
               {issue.number} {issue.title}
             </Link>
+            <div>
+              {issue.pull_request ? (
+                <>
+                  <span className="nes-badge">
+                    <span className="is-dark">PR</span>
+                  </span>
+                  <span className="nes-badge">
+                    <span
+                      className={
+                        issue.state === "open" ? "is-success" : "is-error"
+                      }
+                    >
+                      {issue.state}
+                    </span>
+                  </span>
+                </>
+              ) : (
+                <span className="nes-badge">
+                  <span className="is-dark">ISSUE</span>
+                </span>
+              )}
+            </div>
             <Markdown content={issue.body} />
           </div>
         ))}

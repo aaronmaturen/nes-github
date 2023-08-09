@@ -28,13 +28,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         });
 
   return json({
-    user,
     repos: repos.data.map((repo: any) => {
       return {
-        // name: repo.name,
-        // description: repo.description,
-        // has_issues: repo.has_issues,
-        ...repo,
+        name: repo.name,
+        description: repo.description,
+        id: repo.id,
       };
     }),
   });

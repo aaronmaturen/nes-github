@@ -317,3 +317,121 @@ export const createRepoIssue = async ({
     },
   });
 };
+
+export const createIssueComment = async ({
+  user,
+  owner,
+  repo,
+  issue,
+  body,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+  issue: string;
+  body: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request(
+    "POST /repos/{owner}/{repo}/issues/{issue}/comments",
+    {
+      owner,
+      repo,
+      issue,
+      body,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+};
+
+export const closeIssue = async ({
+  user,
+  owner,
+  repo,
+  issue,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+  issue: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await await octokit.request(
+    "PATCH /repos/{owner}/{repo}/issues/{issue}",
+    {
+      owner,
+      repo,
+      issue,
+      state: "closed",
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+};
+
+export const reopenIssue = async ({
+  user,
+  owner,
+  repo,
+  issue,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+  issue: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await await octokit.request(
+    "PATCH /repos/{owner}/{repo}/issues/{issue}",
+    {
+      owner,
+      repo,
+      issue,
+      state: "open",
+      state_reason: "reopened",
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+};
+
+export const getIssueEvents = async ({
+  user,
+  owner,
+  repo,
+  number,
+}: {
+  user: User;
+  owner: string;
+  repo: string;
+  number: string;
+}) => {
+  const octokit = new Octokit({
+    auth: `Bearer ${user.accessToken}`,
+  });
+
+  return await octokit.request(
+    "GET /repos/{owner}/{repo}/issues/{number}/events",
+    {
+      owner,
+      repo,
+      number,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+};
