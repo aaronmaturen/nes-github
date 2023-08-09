@@ -126,10 +126,8 @@ export default function Screen() {
             <div>
               {issue.pull_request ? (
                 <>
-                  <span className="nes-badge">
+                  <span className="nes-badge is-splited">
                     <span className="is-dark">PR</span>
-                  </span>
-                  <span className="nes-badge">
                     <span
                       className={
                         issue.state === "open" ? "is-success" : "is-error"
@@ -140,9 +138,18 @@ export default function Screen() {
                   </span>
                 </>
               ) : (
-                <span className="nes-badge">
-                  <span className="is-dark">ISSUE</span>
-                </span>
+                <>
+                  <span className="nes-badge is-splited">
+                    <span className="is-dark">ISSUE</span>
+                    <span
+                      className={
+                        issue.state === "open" ? "is-success" : "is-error"
+                      }
+                    >
+                      {issue.state}
+                    </span>
+                  </span>
+                </>
               )}
             </div>
             <Markdown content={issue.body} />

@@ -137,22 +137,31 @@ export default function Screen() {
             <div className="flex gap-4">
               {issue.pull_request ? (
                 <>
-                  <span className="nes-badge">
+                  <span className="nes-badge is-splited">
                     <span className="is-dark">PR</span>
+                    <span
+                      className={
+                        issue.state === "open" ? "is-success" : "is-error"
+                      }
+                    >
+                      {issue.state}
+                    </span>
                   </span>
                 </>
               ) : (
-                <span className="nes-badge">
-                  <span className="is-dark">ISSUE</span>
-                </span>
+                <>
+                  <span className="nes-badge is-splited">
+                    <span className="is-dark">ISSUE</span>
+                    <span
+                      className={
+                        issue.state === "open" ? "is-success" : "is-error"
+                      }
+                    >
+                      {issue.state}
+                    </span>
+                  </span>
+                </>
               )}
-              <span className="nes-badge">
-                <span
-                  className={issue.state === "open" ? "is-success" : "is-error"}
-                >
-                  {issue.state}
-                </span>
-              </span>
             </div>
             <Markdown content={issue.body} />
             {issue.canClose && (
