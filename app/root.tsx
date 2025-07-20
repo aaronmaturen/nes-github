@@ -12,10 +12,12 @@ import {
 
 import stylesheet from "~/tailwind.css";
 import nesStylesheet from "~/themes/nes-theme.css";
+import themeSystem from "~/themes/theme-system.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   { rel: "stylesheet", href: nesStylesheet },
+  { rel: "stylesheet", href: themeSystem },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
@@ -25,7 +27,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" data-theme="professional">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />

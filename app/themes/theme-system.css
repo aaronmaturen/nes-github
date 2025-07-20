@@ -1,0 +1,386 @@
+/* Theme System - Switch between NES and Professional themes */
+
+/* CSS Custom Properties for theming */
+:root {
+  /* Professional theme (default) */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 16px;
+  --font-size-small: 14px;
+  --font-size-large: 18px;
+  --font-weight-normal: 400;
+  --font-weight-bold: 600;
+  
+  /* Colors */
+  --color-primary: #007bff;
+  --color-primary-hover: #0056b3;
+  --color-primary-dark: #004085;
+  --color-success: #28a745;
+  --color-success-hover: #218838;
+  --color-success-dark: #155724;
+  --color-warning: #ffc107;
+  --color-warning-hover: #e0a800;
+  --color-warning-dark: #856404;
+  --color-error: #dc3545;
+  --color-error-hover: #c82333;
+  --color-error-dark: #721c24;
+  
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+  --color-background: #ffffff;
+  --color-background-alt: #f8f9fa;
+  --color-border: #dee2e6;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Borders */
+  --border-width: 1px;
+  --border-radius: 0.25rem;
+  --border-style: solid;
+  
+  /* Transitions */
+  --transition-speed: 0.15s;
+  --transition-easing: ease-in-out;
+  
+  /* Button styles */
+  --button-padding-x: 1rem;
+  --button-padding-y: 0.5rem;
+  --button-border-width: var(--border-width);
+  --button-shadow: 0 1px 2px var(--color-shadow);
+  --button-shadow-hover: 0 2px 4px var(--color-shadow);
+  
+  /* Container styles */
+  --container-padding: var(--spacing-lg);
+  --container-border-width: var(--border-width);
+  --container-shadow: 0 2px 4px var(--color-shadow);
+}
+
+/* NES theme */
+[data-theme="nes"] {
+  --font-family: "Press Start 2P", monospace;
+  --font-size-base: 16px;
+  --font-size-small: 12px;
+  --font-size-large: 20px;
+  --font-weight-normal: 400;
+  --font-weight-bold: 400;
+  
+  /* NES Colors */
+  --color-primary: #209cee;
+  --color-primary-hover: #108de0;
+  --color-primary-dark: #006bb3;
+  --color-success: #92cc41;
+  --color-success-hover: #76c442;
+  --color-success-dark: #4aa52e;
+  --color-warning: #f7d51d;
+  --color-warning-hover: #f2c409;
+  --color-warning-dark: #e59400;
+  --color-error: #e76e55;
+  --color-error-hover: #ce372b;
+  --color-error-dark: #8c2022;
+  
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+  --color-background: #ffffff;
+  --color-background-alt: #f8f9fa;
+  --color-border: #212529;
+  --color-shadow: #adafbc;
+  
+  /* NES specific */
+  --border-width: 4px;
+  --border-radius: 0;
+  --border-style: solid;
+  
+  /* No transitions for retro feel */
+  --transition-speed: 0s;
+  --transition-easing: step-end;
+  
+  /* NES Button styles */
+  --button-padding-x: 8px;
+  --button-padding-y: 6px;
+  --button-border-width: 4px;
+  --button-shadow: inset -4px -4px var(--color-shadow);
+  --button-shadow-hover: inset -6px -6px var(--color-shadow);
+  
+  /* NES Container styles */
+  --container-padding: 1.5rem 2rem;
+  --container-border-width: 4px;
+  --container-shadow: none;
+}
+
+/* Base styles using CSS custom properties */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  line-height: 1.5;
+  transition: all var(--transition-speed) var(--transition-easing);
+}
+
+/* Professional theme overrides for NES elements */
+[data-theme="professional"] {
+  /* Override NES button styles */
+  .nes-btn {
+    border-image: none !important;
+    border: var(--button-border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--button-padding-y) var(--button-padding-x);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    box-shadow: var(--button-shadow);
+    transition: all var(--transition-speed) var(--transition-easing);
+    cursor: pointer;
+  }
+  
+  .nes-btn::after {
+    display: none;
+  }
+  
+  .nes-btn:hover {
+    background-color: var(--color-background-alt);
+    box-shadow: var(--button-shadow-hover);
+    transform: translateY(-1px);
+  }
+  
+  .nes-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--button-shadow);
+  }
+  
+  .nes-btn.is-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+  
+  .nes-btn.is-primary:hover {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+  
+  .nes-btn.is-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: white;
+  }
+  
+  .nes-btn.is-success:hover {
+    background-color: var(--color-success-hover);
+    border-color: var(--color-success-hover);
+  }
+  
+  .nes-btn.is-warning {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-text);
+  }
+  
+  .nes-btn.is-warning:hover {
+    background-color: var(--color-warning-hover);
+    border-color: var(--color-warning-hover);
+  }
+  
+  .nes-btn.is-error {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: white;
+  }
+  
+  .nes-btn.is-error:hover {
+    background-color: var(--color-error-hover);
+    border-color: var(--color-error-hover);
+  }
+  
+  /* Override NES container styles */
+  .nes-container {
+    border: var(--container-border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--container-padding);
+    font-family: var(--font-family);
+    background-color: var(--color-background);
+    box-shadow: var(--container-shadow);
+  }
+  
+  .nes-container.is-rounded {
+    border-image: none !important;
+    border-radius: var(--border-radius);
+  }
+  
+  .nes-container.is-dark {
+    background-color: var(--color-text);
+    color: var(--color-background);
+    border-color: var(--color-text);
+  }
+  
+  .nes-container.is-dark::after {
+    display: none;
+  }
+  
+  /* Override NES input styles */
+  .nes-input,
+  .nes-textarea {
+    border-image: none !important;
+    border: var(--border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    background-color: var(--color-background);
+    transition: border-color var(--transition-speed) var(--transition-easing);
+  }
+  
+  .nes-input:focus,
+  .nes-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  /* Override NES select styles */
+  .nes-select select {
+    border-image: none !important;
+    border: var(--border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    background-color: var(--color-background);
+  }
+  
+  /* Override NES progress styles */
+  .nes-progress {
+    border-image: none !important;
+    border: var(--border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    height: 1.5rem;
+    background-color: var(--color-background-alt);
+  }
+  
+  .nes-progress::-webkit-progress-bar {
+    background-color: var(--color-background-alt);
+    border-radius: var(--border-radius);
+  }
+  
+  .nes-progress::-webkit-progress-value {
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    transition: width var(--transition-speed) var(--transition-easing);
+  }
+  
+  .nes-progress::-moz-progress-bar {
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+  }
+  
+  /* Override NES table styles */
+  .nes-table td,
+  .nes-table th {
+    border-width: var(--border-width);
+    border-color: var(--color-border);
+    font-family: var(--font-family);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .nes-table td::after,
+  .nes-table td::before,
+  .nes-table th::after,
+  .nes-table th::before {
+    display: none;
+  }
+  
+  /* Override NES dialog styles */
+  .nes-dialog {
+    border-image: none !important;
+    border: var(--border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    box-shadow: 0 4px 6px var(--color-shadow);
+  }
+  
+  /* Override NES balloon styles */
+  .nes-balloon {
+    border-image: none !important;
+    border: var(--border-width) var(--border-style) var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    box-shadow: 0 2px 4px var(--color-shadow);
+  }
+  
+  .nes-balloon::after,
+  .nes-balloon::before {
+    display: none;
+  }
+  
+  /* Override NES list styles */
+  .nes-list.is-disc li::before,
+  .nes-list.is-circle li::before {
+    display: none;
+  }
+  
+  .nes-list.is-disc li,
+  .nes-list.is-circle li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  
+  .nes-list.is-disc li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2em;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+  }
+  
+  .nes-list.is-circle li::before {
+    content: "◦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1em;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+  }
+  
+  /* Remove pixelated cursors */
+  html,
+  a,
+  button,
+  .nes-pointer {
+    cursor: auto !important;
+  }
+  
+  a:hover,
+  button:not(:disabled):hover {
+    cursor: pointer !important;
+  }
+}
+
+/* Utility classes for spacing that work with both themes */
+.theme-spacing-xs { margin: var(--spacing-xs); }
+.theme-spacing-sm { margin: var(--spacing-sm); }
+.theme-spacing-md { margin: var(--spacing-md); }
+.theme-spacing-lg { margin: var(--spacing-lg); }
+.theme-spacing-xl { margin: var(--spacing-xl); }
+
+.theme-padding-xs { padding: var(--spacing-xs); }
+.theme-padding-sm { padding: var(--spacing-sm); }
+.theme-padding-md { padding: var(--spacing-md); }
+.theme-padding-lg { padding: var(--spacing-lg); }
+.theme-padding-xl { padding: var(--spacing-xl); }
+
+/* Theme transition helper */
+html.theme-transitioning * {
+  transition: all 0.3s ease-in-out !important;
+}
