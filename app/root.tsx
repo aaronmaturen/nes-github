@@ -11,8 +11,7 @@ import {
 } from "@remix-run/react";
 
 import stylesheet from "~/tailwind.css";
-import nesStylesheet from "nes.css/css/nes.min.css";
-// script.js
+import nesStylesheet from "~/themes/nes-theme.css";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
